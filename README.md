@@ -173,7 +173,7 @@ worldbank-rag-qa/
 ├── data/                         # Data directory (gitignored)
 │   └── world_bank_pdfs/          # Source PDFs
 ├── embeddings/                   # Embedding cache (gitignored)
-├── vector_store/                  # Database storage (gitignored)
+├── vector_store/                 # Database storage (gitignored)
 ├── requirements.txt              # Python dependencies
 ├── .gitignore                    # Git ignore rules
 ├── LICENSE                       # MIT License
@@ -304,5 +304,3 @@ For questions, issues, or suggestions:
 - 📧 **General Questions**: Use GitHub Discussions
 
 ---
-
-**Built with ❤️ for accessible development knowledge**
