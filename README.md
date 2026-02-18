@@ -10,13 +10,14 @@ This system transforms static World Bank Development Reports into an interactive
 
 ```mermaid
 flowchart LR
-    A[PDF Reports (2020-2025)] --> B[Text Chunking & Processing]
-    B --> C[Embeddings Generation]
-    C --> D[Vector Store (ChromaDB)]
-    D --> E[RAG Pipeline & Answer Generation]
-    E --> F[LLM (Ollama - Llama2/3)]
-    E --> G[Web Interface (Streamlit)]
+    A["PDF Reports 2020-2025"] --> B["Text Chunking & Processing"]
+    B --> C["Embeddings Generation"]
+    C --> D["Vector Store - ChromaDB"]
+    D --> E["RAG Pipeline & Answer Generation"]
+    E --> F["LLM - Ollama (Llama2/3)"]
+    E --> G["Web Interface - Streamlit"]
 ```
+
 ## 📊 Dataset
 
 ### Source Documents
