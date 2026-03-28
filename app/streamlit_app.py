@@ -13,6 +13,7 @@ import pandas as pd
 
 # Add parent directory to path for imports
 sys.path.append('..')
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from retriever.rag_retriever import RAGRetriever
 from generator.answer_generator import AnswerGenerator
@@ -51,11 +52,21 @@ st.markdown("""
         border-left: 3px solid #28a745;
     }
     .answer-container {
-        background: #ffffff;
+        background: #f8f9fa;
         padding: 1.5rem;
         border-radius: 0.5rem;
         border: 1px solid #e1e5e9;
         margin: 1rem 0;
+        color: #2c3e50;
+        line-height: 1.6;
+    }
+    .chat-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .main-content {
+        flex: 1;
+        padding: 0 1rem;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -119,21 +130,17 @@ def display_chat_interface():
     """Display main chat interface."""
     st.markdown('<div class="main-header">🏦 World Bank RAG System</div>', unsafe_allow_html=True)
     
-    # Query input
-    col1, col2 = st.columns([4, 1])
+    # Query input - full width
+    query = st.text_input(
+        "Ask a question about World Bank development reports:",
+        placeholder="e.g., What are the main challenges in global development?",
+        key="query_input"
+    )
     
-    with col1:
-        query = st.text_input(
-            "Ask a question about World Bank development reports:",
-            placeholder="e.g., What are the main challenges in global development?",
-            key="query_input"
-        )
-    
-    with col2:
-        st.markdown("<br>", unsafe_allow_html=True)  # Align button
-        if st.button("🔍 Search", type="primary", use_container_width=True):
-            if query and query.strip():
-                handle_query(query.strip())
+    # Search button - full width
+    if st.button("🔍 Search", type="primary", use_container_width=True):
+        if query and query.strip():
+            handle_query(query.strip())
 
 def handle_query(query: str):
     """Handle user query and display results."""
@@ -152,7 +159,14 @@ def handle_query(query: str):
     # Process query
     with st.spinner("🔍 Searching documents and generating answer..."):
         try:
-            result = st.session_state.rag_system.answer_query(query, top_k=5)
+            result = st.session_state.rag_system.answer_query(query, top_k=5, include_sources=True)
+            
+            # DEBUG: Print what we actually got
+            print(f"DEBUG - Answer length: {len(result.get('answer', ''))}")
+            print(f"DEBUG - Sources count: {len(result.get('sources', []))}")
+            print(f"DEBUG - Error: {result.get('error', 'None')}")
+            print(f"DEBUG - Answer preview: {result.get('answer', '')[:100]}...")
+            
         except Exception as e:
             st.error(f"❌ Error processing query: {e}")
             return
@@ -337,6 +351,9 @@ def main():
     # Initialize RAG system
     initialize_rag_system()
     
+    # Main layout container
+    st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+    
     # Sidebar
     display_sidebar()
     display_metrics()
@@ -345,12 +362,17 @@ def main():
     tab1, tab2, tab3 = st.tabs(["💬 Chat", "📈 Analytics", "ℹ️ About"])
     
     with tab1:
+        st.markdown('<div class="main-content">', unsafe_allow_html=True)
         display_chat_interface()
+        st.markdown('</div>', unsafe_allow_html=True)
     
     with tab2:
+        st.markdown('<div class="main-content">', unsafe_allow_html=True)
         display_analytics()
+        st.markdown('</div>', unsafe_allow_html=True)
     
     with tab3:
+        st.markdown('<div class="main-content">', unsafe_allow_html=True)
         st.markdown("## ℹ️ About World Bank RAG System")
         st.markdown("""
         ### 🎯 Purpose
@@ -379,6 +401,8 @@ def main():
         - **AI**: Ollama with Llama2/Llama3 models
         - **Vector DB**: Chroma with persistent storage
         """)
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()

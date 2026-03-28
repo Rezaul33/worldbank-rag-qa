@@ -21,7 +21,7 @@ class ChromaVectorStore:
     
     def __init__(self, 
                  collection_name: str = "worldbank_documents",
-                 persist_directory: str = "vector_store/chroma_db"):
+                 persist_directory: str = None):
         """
         Initialize Chroma vector store.
         
@@ -30,13 +30,21 @@ class ChromaVectorStore:
             persist_directory: Directory to persist the database
         """
         self.collection_name = collection_name
-        self.persist_directory = persist_directory
+        
+        # Use absolute path to avoid path issues when running from different directories
+        if persist_directory is None:
+            # Get the project root directory (where this file is located)
+            current_dir = Path(__file__).parent
+            project_root = current_dir.parent
+            persist_directory = project_root / "vector_store" / "chroma_db"
+        
+        self.persist_directory = str(persist_directory)
         
         # Create persist directory if it doesn't exist
-        Path(persist_directory).mkdir(parents=True, exist_ok=True)
+        Path(self.persist_directory).mkdir(parents=True, exist_ok=True)
         
         # Initialize Chroma client with persistent storage
-        self.client = chromadb.PersistentClient(path=persist_directory)
+        self.client = chromadb.PersistentClient(path=self.persist_directory)
         
         # Get or create collection
         try:
