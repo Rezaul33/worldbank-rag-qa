@@ -1,12 +1,233 @@
-# 🏦 World Bank RAG QA System
+# World Bank RAG QA System
 
-A sophisticated Retrieval-Augmented Generation (RAG) system that provides intelligent question-answering capabilities for World Bank Development Reports using advanced vector search and AI-powered response generation.
+An intelligent question-answering system for World Bank Development Reports using Retrieval-Augmented Generation (RAG).
 
 ## 🎯 Overview
 
-This system transforms static World Bank Development Reports into an interactive knowledge base, allowing users to ask natural language questions and receive accurate, context-aware answers with proper citations. It combines modern embedding techniques, vector databases, and large language models to create a powerful research assistant.
+This system allows users to ask natural language questions about World Bank Development Reports (2020-2025) and receive accurate, source-cited answers powered by AI. It combines semantic search with large language models to provide intelligent responses grounded in real World Bank data.
 
 ## 🏗️ Architecture
+
+### Frontend
+- **Framework**: Streamlit
+- **Features**: Chat interface, analytics dashboard, settings panel
+- **UI/UX**: Responsive design with professional styling
+
+### Backend
+- **Language**: Python 3.11+
+- **Vector Database**: ChromaDB with persistent storage
+- **Document Processing**: PDF ingestion, text chunking, embeddings
+
+### AI/ML Components
+- **Embeddings**: SentenceTransformers (all-MiniLM-L6-v2, 384 dimensions)
+- **Vector Search**: Semantic similarity search with configurable top-k
+- **LLM Integration**: Ollama with Llama2 model
+- **RAG Pipeline**: Document retrieval → context generation → answer synthesis
+
+## 📊 Data
+
+### Source Documents
+- **Content**: World Bank Group Annual Reports (2020-2025)
+- **Volume**: 460 pages → 405 chunks
+- **Format**: PDF with full text extraction
+- **Metadata**: Page numbers, document sources, similarity scores
+
+### Processing Pipeline
+1. **Ingestion**: PDF text extraction with pdfplumber
+2. **Chunking**: Token-based segmentation (512 tokens/chunk, 50 overlap)
+3. **Embedding**: SentenceTransformers model for vector representation
+4. **Storage**: ChromaDB with persistent local storage
+5. **Retrieval**: Semantic search with configurable similarity thresholds
+
+## 🚀 Quick Start
+
+### Prerequisites
+```bash
+# Python environment
+python 3.11+
+
+# Required packages
+pip install streamlit chromadb sentence-transformers pdfplumber ollama requests pandas numpy
+```
+
+### Setup
+```bash
+# Clone repository
+git clone https://github.com/yourusername/worldbank-rag-qa.git
+cd worldbank-rag-qa
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Start Ollama (if not running)
+ollama serve
+
+# Download Llama2 model
+ollama pull llama2
+
+# Process World Bank PDFs
+python process_data.py
+
+# Launch Streamlit app
+cd app
+streamlit run streamlit_app.py
+```
+
+### Usage
+1. **Launch**: Access http://localhost:8501 in your browser
+2. **Ask Questions**: Type natural language queries about World Bank development
+3. **View Results**: Get AI answers with source citations
+4. **Explore Analytics**: Monitor system performance and usage statistics
+
+## 🎨 Features
+
+### Core Functionality
+- **Intelligent Q&A**: Natural language questions answered with context
+- **Source Citations**: Every answer includes document references
+- **Real-time Search**: Instant document retrieval from 405 chunks
+- **Quality Assessment**: Automated scoring of answer quality
+
+### User Interface
+- **Chat Interface**: Conversational Q&A experience
+- **Analytics Dashboard**: Performance metrics and usage statistics
+- **Settings Panel**: Model selection, retrieval parameters
+- **Responsive Design**: Works on desktop and mobile devices
+
+### Advanced Features
+- **Multiple Models**: Support for different Ollama models
+- **Configurable Search**: Adjustable top-k and similarity thresholds
+- **Performance Monitoring**: Response time tracking and success rates
+- **Error Handling**: Graceful failure recovery and user feedback
+
+## 📈 Performance
+
+### System Metrics
+- **Document Processing**: 405 chunks from 6 reports
+- **Embedding Dimension**: 384 vectors per chunk
+- **Search Speed**: <1 second retrieval time
+- **Response Generation**: 10-60 seconds (LLM dependent)
+- **Accuracy**: High relevance scores (>0.5) for domain-specific queries
+
+### Quality Assessment
+- **Length Scoring**: Automated evaluation of answer completeness
+- **Relevance Analysis**: Keyword matching and semantic coherence
+- **Citation Verification**: Source attribution quality checking
+- **Overall Score**: Composite quality metric (0-1 scale)
+
+## 🔧 Configuration
+
+### Environment Variables
+```bash
+# Ollama Configuration
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama2:latest
+
+# Vector Database
+CHROMA_PERSIST_DIR=vector_store/chroma_db
+COLLECTION_NAME=worldbank_documents
+
+# Embedding Model
+EMBEDDING_MODEL=all-MiniLM-L6-v2
+EMBEDDING_DIMENSION=384
+```
+
+### Settings
+- **Chunk Size**: 512 tokens with 50 token overlap
+- **Retrieval**: Top-k=5 documents by default
+- **Similarity Threshold**: 0.0 (no filtering by default)
+- **Max Tokens**: 8192 for LLM context window
+
+## 🛠️ Development
+
+### Project Structure
+```
+worldbank-rag-qa/
+├── app/
+│   ├── streamlit_app.py          # Main Streamlit interface
+│   └── requirements.txt         # Frontend dependencies
+├── retriever/
+│   └── rag_retriever.py        # RAG logic and orchestration
+├── embeddings/
+│   ├── __init__.py
+│   └── embedding_generator.py  # SentenceTransformers integration
+├── vector_store/
+│   └── chroma_db.py          # ChromaDB operations
+├── ingestion/
+│   └── pdf_ingestion.py       # PDF text extraction
+├── chunking/
+│   └── text_chunker.py       # Document chunking logic
+├── generator/
+│   └── answer_generator.py     # Answer quality assessment
+├── evaluation/
+│   └── metrics.py             # RAG evaluation metrics
+├── data/
+│   └── world_bank_pdfs/       # World Bank PDF documents
+├── process_data.py               # Data processing pipeline
+└── README.md                   # This file
+```
+
+### Key Components
+- **RAGRetriever**: Main orchestration class
+- **ChromaVectorStore**: Vector database abstraction
+- **EmbeddingGenerator**: SentenceTransformers wrapper
+- **TextChunker**: Intelligent document segmentation
+- **PDFIngestion**: Robust PDF text extraction
+
+## 🧪 Testing
+
+### Unit Tests
+- Vector store operations
+- Embedding generation
+- Text chunking
+- PDF ingestion
+
+### Integration Tests
+- End-to-end RAG pipeline
+- Streamlit interface functionality
+- Ollama model integration
+
+### Performance Tests
+- Query response times
+- Memory usage optimization
+- Concurrent user handling
+
+## 🔮 Future Enhancements
+
+### Planned Features
+- **Multi-modal Support**: Image and table extraction from PDFs
+- **Advanced Analytics**: Query trends, document popularity
+- **Export Functionality**: PDF/CSV export of Q&A sessions
+- **User Authentication**: Personalized chat histories
+- **API Endpoints**: RESTful API for external integration
+
+### Technical Improvements
+- **Model Fine-tuning**: Domain-specific embedding models
+- **Caching Layer**: Redis for frequent queries
+- **Scalability**: Distributed vector database support
+- **Security**: Input validation and rate limiting
+
+## 📝 License
+
+MIT License - See LICENSE file for details
+
+## 👥 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Submit a pull request
+
+## 📞 Support
+
+For questions or support:
+- Create an issue in the GitHub repository
+- Review the documentation and existing issues
+- Check the troubleshooting section in README
+
+---
+
+**Built with ❤️ for the World Bank community and development researchers worldwide.**
 
 ```mermaid
 flowchart LR
